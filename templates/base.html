@@ -12,7 +12,12 @@
 
     <nav class="navbar">
         <div class="nav-brand">🏆 QuestBoard</div>
+        
+        {# Only render the menu toggle button if we are NOT on the login or signup pages #}
+        {% if request.endpoint not in ['login', 'signup'] %}
         <button class="nav-toggle" onclick="toggleMenu()">☰</button>
+        {% endif %}
+        
         <div class="nav-links" id="nav-links">
             {% if request.endpoint not in ['login', 'signup'] %}
             {% if session.get("user_id") %}
