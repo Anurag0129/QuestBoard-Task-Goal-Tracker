@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Rewards - TaskQuest{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+
+    <h2>🏆 Your Trophy Case</h2>
+
+    <div class="card">
+        {% if rewards %}
+            <div class="trophy-grid">
+                {% for reward in rewards %}
+                <div class="trophy-card">
+                    <div class="trophy-icon">{{ reward[2] }}</div>
+                    <div class="trophy-title">{{ reward[0] }}</div>
+                    <div class="trophy-desc">{{ reward[1] }}</div>
+                    <div class="trophy-date">Earned: {{ reward[3].strftime('%b %d, %Y') }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-trophy">
+                <p>🎖️ No trophies yet!</p>
+                <p>Complete tasks and goals to earn rewards.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- All possible trophies -->
+    <div class="card">
+        <h3>🗺️ All Trophies to Unlock</h3>
+        <div class="trophy-grid">
+            <div class="trophy-card locked">
+                <div class="trophy-icon">🌱</div>
+                <div class="trophy-title">First Step</div>
+                <div class="trophy-desc">Complete your first task</div>
+            </div>
+            <div class="trophy-card locked">
+                <div class="trophy-icon">🔥</div>
+                <div class="trophy-title">On a Roll</div>
+                <div class="trophy-desc">Complete 5 tasks</div>
+            </div>
+            <div class="trophy-card locked">
+                <div class="trophy-icon">💪</div>
+                <div class="trophy-title">Task Master</div>
+                <div class="trophy-desc">Complete 10 tasks</div>
+            </div>
+            <div class="trophy-card locked">
+                <div class="trophy-icon">🎯</div>
+                <div class="trophy-title">Goal Getter</div>
+                <div class="trophy-desc">Complete your first goal</div>
+            </div>
+            <div class="trophy-card locked">
+                <div class="trophy-icon">⭐</div>
+                <div class="trophy-title">Overachiever</div>
+                <div class="trophy-desc">Complete 3 goals</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

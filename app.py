@@ -1,9 +1,65 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from db import get_connection
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+print("SECRET KEY:", os.getenv("SECRET_KEY"))
 
 app = Flask(__name__)
-app.secret_key = "dev-secret-key-change-later"
+app.secret_key = os.getenv("SECRET_KEY")
+
+#--------------------- REWARDS CHECKING ---------------
+
+def check_and_award_rewards(user_id):
+    conn = get_connection()
+    cur = conn.cursor()
+
+    # Count completed tasks
+    cur.execute("SELECT COUNT(*) FROM tasks WHERE user_id = %s AND is_completed = TRUE", (user_id,))
+    completed_tasks = cur.fetchone()[0]
+
+    # Count completed goals
+    cur.execute("SELECT COUNT(*) FROM goals WHERE user_id = %s AND is_completed = TRUE", (user_id,))
+    completed_goals = cur.fetchone()[0]
+
+    # Fetch already earned reward titles
+    cur.execute("SELECT title FROM rewards WHERE user_id = %s", (user_id,))
+    earned = [row[0] for row in cur.fetchall()]
+
+    new_rewards = []
+
+    if completed_tasks >= 1 and "First Step" not in earned:
+        new_rewards.append(("First Step", "Completed your first task!", "🌱"))
+
+    if completed_tasks >= 5 and "On a Roll" not in earned:
+        new_rewards.append(("On a Roll", "Completed 5 tasks!", "🔥"))
+
+    if completed_tasks >= 10 and "Task Master" not in earned:
+        new_rewards.append(("Task Master", "Completed 10 tasks!", "💪"))
+
+    if completed_goals >= 1 and "Goal Getter" not in earned:
+        new_rewards.append(("Goal Getter", "Completed your first goal!", "🎯"))
+
+    if completed_goals >= 3 and "Overachiever" not in earned:
+        new_rewards.append(("Overachiever", "Completed 3 goals!", "⭐"))
+
+    for title, description, icon in new_rewards:
+        cur.execute(
+            "INSERT INTO rewards (user_id, title, description, icon) VALUES (%s, %s, %s, %s)",
+            (user_id, title, description, icon)
+        )
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return new_rewards
+
+# -------------------- REWARDS CHECKING ENDS HERE -----------------------
+
+
 
 @app.route("/")
 def home():
@@ -151,6 +207,10 @@ def complete_task(task_id):
         cur.close()
         conn.close()
 
+        new_rewards = check_and_award_rewards(session["user_id"])
+    for reward in new_rewards:
+        flash(f"🏆 New Trophy Unlocked: {reward[2]} {reward[0]}!")
+
     return redirect(url_for("dashboard"))
 
 
@@ -251,6 +311,9 @@ def complete_goal(goal_id):
     finally:
         cur.close()
         conn.close()
+        new_rewards = check_and_award_rewards(session["user_id"])
+    for reward in new_rewards:
+        flash(f"🏆 New Trophy Unlocked: {reward[2]} {reward[0]}!")
 
     return redirect(url_for("goals"))
 
@@ -277,6 +340,27 @@ def delete_goal(goal_id):
         conn.close()
 
     return redirect(url_for("goals"))
+
+# ------------------------------- REWARDS ROUTE -----------------------------
+
+@app.route("/rewards")
+def rewards():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT title, description, icon, earned_at FROM rewards WHERE user_id = %s ORDER BY earned_at DESC",
+        (session["user_id"],)
+    )
+    rewards = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    return render_template("rewards.html", rewards=rewards)
+
+# ----------------------------- REWARDS ROUTE ENDS -----------------------------
 
 
 

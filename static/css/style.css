@@ -385,3 +385,61 @@ body {
     outline: none;
     border-color: #4a90d9;
 }
+
+/* Trophy grid */
+.trophy-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.trophy-card {
+    background: linear-gradient(135deg, #fff9e6, #fff3cc);
+    border: 2px solid #f0c040;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    width: 160px;
+    box-shadow: 0 4px 10px rgba(240, 192, 64, 0.2);
+}
+
+.trophy-card.locked {
+    background: #f5f5f5;
+    border-color: #ddd;
+    box-shadow: none;
+    opacity: 0.6;
+}
+
+.trophy-icon {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+}
+
+.trophy-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.trophy-desc {
+    font-size: 0.78rem;
+    color: #666;
+    margin-bottom: 6px;
+}
+
+.trophy-date {
+    font-size: 0.72rem;
+    color: #999;
+}
+
+.empty-trophy {
+    text-align: center;
+    padding: 30px;
+    color: #888;
+}
+
+.empty-trophy p {
+    margin-bottom: 8px;
+    font-size: 1rem;
+}
