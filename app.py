@@ -3,6 +3,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from db import get_connection
 import os
 from dotenv import load_dotenv
+# Add this import at the top of app.py
+from email_validator import validate_email, EmailNotValidError
 
 load_dotenv()
 print("SECRET KEY:", os.getenv("SECRET_KEY"))
@@ -104,12 +106,53 @@ def home():
         return redirect(url_for("dashboard"))
     return redirect(url_for("login"))
 
+# @app.route("/signup", methods=["GET", "POST"])
+# def signup():
+#     if request.method == "POST":
+#         username = request.form["username"]
+#         email = request.form["email"]
+#         password = request.form["password"]
+
+#         password_hash = generate_password_hash(password)
+
+#         conn = get_connection()
+#         cur = conn.cursor()
+#         try:
+#             cur.execute(
+#                 "INSERT INTO users (username, email, password_hash) VALUES (%s, %s, %s)",
+#                 (username, email, password_hash)
+#             )
+#             conn.commit()
+#             flash("Account created! Please log in.")
+#             return redirect(url_for("login"))
+#         except Exception as e:
+#             conn.rollback()
+#             flash(f"Error: {e}")
+#         finally:
+#             cur.close()
+#             conn.close()
+
+#     return render_template("signup.html")
+
+
+# ----------------------------------------- UPDATED SIGNUP FOR EMAIL VERIFICATION ----------------------
+
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "POST":
         username = request.form["username"]
         email = request.form["email"]
         password = request.form["password"]
+
+        # ---- EMAIL VALIDATION BLOCK ----
+        try:
+            # check_deliverability=True verifies if the domain actually exists
+            valid = validate_email(email, check_deliverability=True)
+            email = valid.email # Normalized email string (lowercase, etc.)
+        except EmailNotValidError as e:
+            flash(f"Invalid Email: {str(e)}")
+            return render_template("signup.html")
+        # --------------------------------
 
         password_hash = generate_password_hash(password)
 
