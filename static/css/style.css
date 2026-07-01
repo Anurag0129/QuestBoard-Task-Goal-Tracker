@@ -506,3 +506,13 @@ body {
 .btn-cancel:hover {
     background-color: #666;
 }
+
+/* STYLE FOR STREAK CARD */
+
+.streak-card {
+    border-top: 4px solid #ff6b35;
+}
+
+.streak-card .stat-number {
+    color: #ff6b35;
+}

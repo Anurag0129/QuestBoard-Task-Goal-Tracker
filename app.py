@@ -60,6 +60,43 @@ def check_and_award_rewards(user_id):
 # -------------------- REWARDS CHECKING ENDS HERE -----------------------
 
 
+# --------------------- STERAK UPDATE FUNCTION ---------------------------
+
+def update_streak(user_id):
+    conn = get_connection()
+    cur = conn.cursor()
+
+    cur.execute(
+        "SELECT streak, last_activity_date FROM users WHERE user_id = %s",
+        (user_id,)
+    )
+    result = cur.fetchone()
+    current_streak = result[0] or 0
+    last_date = result[1]
+
+    from datetime import date
+    today = date.today()
+
+    if last_date is None:
+        new_streak = 1
+    elif last_date == today:
+        new_streak = current_streak  # already updated today
+    elif (today - last_date).days == 1:
+        new_streak = current_streak + 1  # consecutive day
+    else:
+        new_streak = 1  # streak broken, reset
+
+    cur.execute(
+        "UPDATE users SET streak = %s, last_activity_date = %s WHERE user_id = %s",
+        (new_streak, today, user_id)
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return new_streak
+
+
 
 @app.route("/")
 def home():
@@ -164,17 +201,21 @@ def dashboard():
     cur.execute("SELECT COUNT(*) FROM tasks WHERE user_id = %s AND is_completed = FALSE", (session["user_id"],))
     pending_tasks = cur.fetchone()[0]
 
+    cur.execute("SELECT streak FROM users WHERE user_id = %s", (session["user_id"],))
+    streak = cur.fetchone()[0] or 0
+
     cur.close()
     conn.close()
 
     return render_template("dashboard.html",
-        tasks=tasks,
-        goals=goals,
-        completed_tasks=completed_tasks,
-        completed_goals=completed_goals,
-        total_rewards=total_rewards,
-        pending_tasks=pending_tasks
-    )
+    tasks=tasks,
+    goals=goals,
+    completed_tasks=completed_tasks,
+    completed_goals=completed_goals,
+    total_rewards=total_rewards,
+    pending_tasks=pending_tasks,
+    streak=streak
+)
 
 
 @app.route("/tasks/add", methods=["POST"])
@@ -225,6 +266,8 @@ def complete_task(task_id):
     finally:
         cur.close()
         conn.close()
+
+        update_streak(session["user_id"])
 
         new_rewards = check_and_award_rewards(session["user_id"])
     for reward in new_rewards:
