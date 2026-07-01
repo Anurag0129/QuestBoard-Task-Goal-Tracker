@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Goal - TaskQuest{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h2>✏️ Edit Goal</h2>
+    <div class="card">
+        <form method="POST" class="task-form" style="flex-direction: column; align-items: stretch;">
+            <label>Goal Title</label>
+            <input type="text" name="title" value="{{ goal[1] }}" required>
+
+            <label style="margin-top: 12px;">Description</label>
+            <input type="text" name="description" value="{{ goal[2] if goal[2] else '' }}">
+
+            <label style="margin-top: 12px;">Target Date</label>
+            <input type="date" name="target_date" value="{{ goal[3] if goal[3] else '' }}">
+
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="submit" class="btn">Save Changes</button>
+                <a href="{{ url_for('goals') }}" class="btn btn-cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

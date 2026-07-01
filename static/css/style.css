@@ -480,3 +480,29 @@ body {
     color: #888;
     font-weight: 500;
 }
+
+/* Edit and Cancel buttons */
+.btn-edit {
+    background-color: #f0a500;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    text-decoration: none;
+}
+
+.btn-edit:hover {
+    background-color: #d4910a;
+}
+
+.btn-cancel {
+    background-color: #888;
+    text-decoration: none;
+    text-align: center;
+}
+
+.btn-cancel:hover {
+    background-color: #666;
+}

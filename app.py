@@ -381,6 +381,90 @@ def rewards():
 
 # ----------------------------- REWARDS ROUTE ENDS -----------------------------
 
+# ----------------------------- EDIT TASK ROUTE --------------------------
+
+@app.route("/tasks/edit/<int:task_id>", methods=["GET", "POST"])
+def edit_task(task_id):
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    if request.method == "POST":
+        title = request.form["title"]
+        due_date = request.form["due_date"] or None
+        try:
+            cur.execute(
+                "UPDATE tasks SET title = %s, due_date = %s WHERE task_id = %s AND user_id = %s",
+                (title, due_date, task_id, session["user_id"])
+            )
+            conn.commit()
+            flash("Task updated!")
+            return redirect(url_for("dashboard"))
+        except Exception as e:
+            conn.rollback()
+            flash(f"Error: {e}")
+        finally:
+            cur.close()
+            conn.close()
+
+    cur.execute(
+        "SELECT task_id, title, due_date FROM tasks WHERE task_id = %s AND user_id = %s",
+        (task_id, session["user_id"])
+    )
+    task = cur.fetchone()
+    cur.close()
+    conn.close()
+
+    if not task:
+        flash("Task not found.")
+        return redirect(url_for("dashboard"))
+
+    return render_template("edit_task.html", task=task)
+
+
+@app.route("/goals/edit/<int:goal_id>", methods=["GET", "POST"])
+def edit_goal(goal_id):
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    if request.method == "POST":
+        title = request.form["title"]
+        description = request.form["description"] or None
+        target_date = request.form["target_date"] or None
+        try:
+            cur.execute(
+                "UPDATE goals SET title = %s, description = %s, target_date = %s WHERE goal_id = %s AND user_id = %s",
+                (title, description, target_date, goal_id, session["user_id"])
+            )
+            conn.commit()
+            flash("Goal updated!")
+            return redirect(url_for("goals"))
+        except Exception as e:
+            conn.rollback()
+            flash(f"Error: {e}")
+        finally:
+            cur.close()
+            conn.close()
+
+    cur.execute(
+        "SELECT goal_id, title, description, target_date FROM goals WHERE goal_id = %s AND user_id = %s",
+        (goal_id, session["user_id"])
+    )
+    goal = cur.fetchone()
+    cur.close()
+    conn.close()
+
+    if not goal:
+        flash("Goal not found.")
+        return redirect(url_for("goals"))
+
+    return render_template("edit_goal.html", goal=goal)
+
 
 
 if __name__ == "__main__":

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Task - TaskQuest{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h2>✏️ Edit Task</h2>
+    <div class="card">
+        <form method="POST" class="task-form" style="flex-direction: column; align-items: stretch;">
+            <label>Task Title</label>
+            <input type="text" name="title" value="{{ task[1] }}" required>
+
+            <label style="margin-top: 12px;">Due Date</label>
+            <input type="date" name="due_date" value="{{ task[2] if task[2] else '' }}">
+
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="submit" class="btn">Save Changes</button>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

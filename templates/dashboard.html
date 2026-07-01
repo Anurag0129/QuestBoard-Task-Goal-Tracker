@@ -63,15 +63,16 @@
                     </div>
                     <div class="task-actions">
                         {% if not task[3] %}
+                            <a href="{{ url_for('edit_task', task_id=task[0]) }}" class="btn-edit">✏️ Edit</a>
                             <form method="POST" action="{{ url_for('complete_task', task_id=task[0]) }}">
-                                <button type="submit" class="btn-complete">✔ Done</button>
+                                 <button type="submit" class="btn-complete">✔ Done</button>
                             </form>
                         {% else %}
                             <span class="badge-done">✅ Completed</span>
                         {% endif %}
-                        <form method="POST" action="{{ url_for('delete_task', task_id=task[0]) }}">
-                            <button type="submit" class="btn-delete">🗑 Delete</button>
-                        </form>
+                            <form method="POST" action="{{ url_for('delete_task', task_id=task[0]) }}">
+                                <button type="submit" class="btn-delete">🗑 Delete</button>
+                            </form>
                     </div>
                 </li>
             {% endfor %}
