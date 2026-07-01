@@ -168,7 +168,16 @@ def signup():
             return redirect(url_for("login"))
         except Exception as e:
             conn.rollback()
-            flash(f"Error: {e}")
+            # flash(f"Error: {e}")
+            error_msg = str(e)
+            # Check which unique constraint was violated and show a clean message
+            if "users_username_key" in error_msg:
+                flash("Registration Failed: This username is already taken.")
+            elif "users_email_key" in error_msg:
+                flash("Registration Failed: This email address is already registered.")
+            else:
+                # Fallback for any other unexpected database issues
+                flash("Registration Failed: Username or email already exists.")
         finally:
             cur.close()
             conn.close()
