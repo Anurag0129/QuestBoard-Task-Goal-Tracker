@@ -32,8 +32,8 @@
         <div class="stat-card streak-card">
             <div class="stat-icon">🔥</div>
             <div class="stat-number">{{ streak }}</div>
-        <div class="stat-label">Day Streak</div>
-</div>
+            <div class="stat-label">Day Streak</div>
+        </div>
     </div>
 
     <!-- Add Task Form -->
@@ -45,7 +45,7 @@
             <select name="goal_id" class="task-select">
                 <option value="">No Goal</option>
                 {% for goal in goals %}
-                    <option value="{{ goal[0] }}">🎯 {{ goal[1] }}</option>
+                <option value="{{ goal[0] }}">🎯 {{ goal[1] }}</option>
                 {% endfor %}
             </select>
             <button type="submit" class="btn btn-small">Add Task</button>
@@ -57,33 +57,50 @@
         <h3>📋 Your Tasks</h3>
 
         {% if tasks %}
-            <ul class="task-list">
+        <ul class="task-list">
             {% for task in tasks %}
-                <li class="task-item {% if task[3] %}completed{% endif %}">
-                    <div class="task-info">
-                        <span class="task-title">{{ task[1] }}</span>
-                        {% if task[2] %}
-                            <span class="task-due">📅 {{ task[2] }}</span>
-                        {% endif %}
-                    </div>
-                    <div class="task-actions">
-                        {% if not task[3] %}
-                            <a href="{{ url_for('edit_task', task_id=task[0]) }}" class="btn-edit">✏️ Edit</a>
-                            <form method="POST" action="{{ url_for('complete_task', task_id=task[0]) }}">
-                                 <button type="submit" class="btn-complete">✔ Done</button>
-                            </form>
-                        {% else %}
-                            <span class="badge-done">✅ Completed</span>
-                        {% endif %}
-                            <form method="POST" action="{{ url_for('delete_task', task_id=task[0]) }}">
-                                <button type="submit" class="btn-delete">🗑 Delete</button>
-                            </form>
-                    </div>
-                </li>
+            <li class="task-item {% if task[3] %}completed{% endif %}">
+                <div class="task-info">
+                    <span class="task-title">{{ task[1] }}</span>
+                    {% if task[2] %}
+                    <span class="task-due">📅 {{ task[2] }}</span>
+                    {% endif %}
+                </div>
+                <div class="task-actions">
+                    {% if not task[3] %}
+                    <a href="{{ url_for('edit_task', task_id=task[0]) }}" class="btn-edit">✏️ Edit</a>
+                    <form method="POST" action="{{ url_for('complete_task', task_id=task[0]) }}">
+                        <button type="submit" class="btn-complete">✔ Done</button>
+                    </form>
+                    {% else %}
+                    <span class="badge-done">✅ Completed</span>
+                    {% endif %}
+                    <form method="POST" action="{{ url_for('delete_task', task_id=task[0]) }}">
+                        <button type="submit" class="btn-delete">🗑 Delete</button>
+                    </form>
+                </div>
+            </li>
             {% endfor %}
-            </ul>
+        </ul>
+        <!-- Pagination -->
+        {% if total_pages > 1 %}
+        <div class="pagination">
+            {% if page > 1 %}
+            <a href="{{ url_for('dashboard', page=page-1) }}" class="page-btn">← Prev</a>
+            {% endif %}
+
+            {% for p in range(1, total_pages + 1) %}
+            <a href="{{ url_for('dashboard', page=p) }}" class="page-btn {% if p == page %}page-active{% endif %}">
+                {{ p }}
+            </a>
+            {% endfor %}
+
+            {% if page < total_pages %} <a href="{{ url_for('dashboard', page=page+1) }}" class="page-btn">Next →</a>
+                {% endif %}
+        </div>
+        {% endif %}
         {% else %}
-            <p class="empty-msg">No tasks yet. Add one above to get started!</p>
+        <p class="empty-msg">No tasks yet. Add one above to get started!</p>
         {% endif %}
     </div>
 

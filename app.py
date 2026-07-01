@@ -173,15 +173,32 @@ def dashboard():
         flash("Please log in first.")
         return redirect(url_for("login"))
 
+    page = request.args.get("page", 1, type=int)
+    per_page = 10
+    offset = (page - 1) * per_page
+
     conn = get_connection()
     cur = conn.cursor()
 
+    # Paginated tasks
     cur.execute(
-        "SELECT task_id, title, due_date, is_completed, created_at FROM tasks WHERE user_id = %s ORDER BY created_at DESC",
-        (session["user_id"],)
+        """SELECT task_id, title, due_date, is_completed, created_at
+           FROM tasks WHERE user_id = %s
+           ORDER BY created_at DESC
+           LIMIT %s OFFSET %s""",
+        (session["user_id"], per_page, offset)
     )
     tasks = cur.fetchall()
 
+    # Total task count for pagination
+    cur.execute(
+        "SELECT COUNT(*) FROM tasks WHERE user_id = %s",
+        (session["user_id"],)
+    )
+    total_tasks = cur.fetchone()[0]
+    total_pages = (total_tasks + per_page - 1) // per_page
+
+    # Goals for dropdown
     cur.execute(
         "SELECT goal_id, title FROM goals WHERE user_id = %s AND is_completed = FALSE ORDER BY created_at DESC",
         (session["user_id"],)
@@ -208,14 +225,16 @@ def dashboard():
     conn.close()
 
     return render_template("dashboard.html",
-    tasks=tasks,
-    goals=goals,
-    completed_tasks=completed_tasks,
-    completed_goals=completed_goals,
-    total_rewards=total_rewards,
-    pending_tasks=pending_tasks,
-    streak=streak
-)
+        tasks=tasks,
+        goals=goals,
+        completed_tasks=completed_tasks,
+        completed_goals=completed_goals,
+        total_rewards=total_rewards,
+        pending_tasks=pending_tasks,
+        streak=streak,
+        page=page,
+        total_pages=total_pages
+    )
 
 
 @app.route("/tasks/add", methods=["POST"])
