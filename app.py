@@ -100,7 +100,9 @@ def update_streak(user_id):
 
 @app.route("/")
 def home():
-    return "TaskQuest is running!"
+    if "user_id" in session:
+        return redirect(url_for("dashboard"))
+    return redirect(url_for("login"))
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
