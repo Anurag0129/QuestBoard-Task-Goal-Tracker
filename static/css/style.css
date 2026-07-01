@@ -370,3 +370,18 @@ body {
     border-radius: 999px;
     transition: width 0.4s ease;
 }
+
+/* Task goal select dropdown */
+.task-select {
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    background: white;
+    color: #333;
+}
+
+.task-select:focus {
+    outline: none;
+    border-color: #4a90d9;
+}

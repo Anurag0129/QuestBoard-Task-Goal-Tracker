@@ -13,6 +13,12 @@
         <form method="POST" action="{{ url_for('add_task') }}" class="task-form">
             <input type="text" name="title" placeholder="What do you need to do?" required>
             <input type="date" name="due_date">
+            <select name="goal_id" class="task-select">
+                <option value="">No Goal</option>
+                {% for goal in goals %}
+                    <option value="{{ goal[0] }}">🎯 {{ goal[1] }}</option>
+                {% endfor %}
+            </select>
             <button type="submit" class="btn btn-small">Add Task</button>
         </form>
     </div>

@@ -71,6 +71,9 @@ def logout():
     flash("You have been logged out.")
     return redirect(url_for("login"))
 
+
+# ********************************************************************
+
 @app.route("/dashboard")
 def dashboard():
     if "user_id" not in session:
@@ -79,15 +82,23 @@ def dashboard():
 
     conn = get_connection()
     cur = conn.cursor()
+
     cur.execute(
         "SELECT task_id, title, due_date, is_completed, created_at FROM tasks WHERE user_id = %s ORDER BY created_at DESC",
         (session["user_id"],)
     )
     tasks = cur.fetchall()
+
+    cur.execute(
+        "SELECT goal_id, title FROM goals WHERE user_id = %s AND is_completed = FALSE ORDER BY created_at DESC",
+        (session["user_id"],)
+    )
+    goals = cur.fetchall()
+
     cur.close()
     conn.close()
 
-    return render_template("dashboard.html", tasks=tasks)
+    return render_template("dashboard.html", tasks=tasks, goals=goals)
 
 
 
@@ -98,13 +109,14 @@ def add_task():
 
     title = request.form["title"]
     due_date = request.form["due_date"] or None
+    goal_id = request.form.get("goal_id") or None
 
     conn = get_connection()
     cur = conn.cursor()
     try:
         cur.execute(
-            "INSERT INTO tasks (user_id, title, due_date) VALUES (%s, %s, %s)",
-            (session["user_id"], title, due_date)
+            "INSERT INTO tasks (user_id, title, due_date, goal_id) VALUES (%s, %s, %s, %s)",
+            (session["user_id"], title, due_date, goal_id)
         )
         conn.commit()
         flash("Task added!")
