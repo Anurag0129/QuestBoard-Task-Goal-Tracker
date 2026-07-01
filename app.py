@@ -151,11 +151,30 @@ def dashboard():
     )
     goals = cur.fetchall()
 
+    # Stats
+    cur.execute("SELECT COUNT(*) FROM tasks WHERE user_id = %s AND is_completed = TRUE", (session["user_id"],))
+    completed_tasks = cur.fetchone()[0]
+
+    cur.execute("SELECT COUNT(*) FROM goals WHERE user_id = %s AND is_completed = TRUE", (session["user_id"],))
+    completed_goals = cur.fetchone()[0]
+
+    cur.execute("SELECT COUNT(*) FROM rewards WHERE user_id = %s", (session["user_id"],))
+    total_rewards = cur.fetchone()[0]
+
+    cur.execute("SELECT COUNT(*) FROM tasks WHERE user_id = %s AND is_completed = FALSE", (session["user_id"],))
+    pending_tasks = cur.fetchone()[0]
+
     cur.close()
     conn.close()
 
-    return render_template("dashboard.html", tasks=tasks, goals=goals)
-
+    return render_template("dashboard.html",
+        tasks=tasks,
+        goals=goals,
+        completed_tasks=completed_tasks,
+        completed_goals=completed_goals,
+        total_rewards=total_rewards,
+        pending_tasks=pending_tasks
+    )
 
 
 @app.route("/tasks/add", methods=["POST"])

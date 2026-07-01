@@ -7,6 +7,30 @@
 
     <h2>Your Dashboard</h2>
 
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-number">{{ completed_tasks }}</div>
+            <div class="stat-label">Tasks Completed</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">⏳</div>
+            <div class="stat-number">{{ pending_tasks }}</div>
+            <div class="stat-label">Tasks Pending</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">🎯</div>
+            <div class="stat-number">{{ completed_goals }}</div>
+            <div class="stat-label">Goals Achieved</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">🏆</div>
+            <div class="stat-number">{{ total_rewards }}</div>
+            <div class="stat-label">Trophies Earned</div>
+        </div>
+    </div>
+
     <!-- Add Task Form -->
     <div class="card">
         <h3>➕ Add a New Task</h3>
