@@ -1,6 +1,7 @@
-# 🏆 TaskQuest
+# 🏆 QuestBoard – Task & Goal Tracker
 
 A gamified task and goal tracker built with Flask, PostgreSQL, and HTML/CSS.
+Track your tasks, set goals, earn trophies, and build daily streaks.
 
 ## Features
 - User signup, login, logout with secure password hashing
