@@ -76,7 +76,7 @@ def dashboard():
     if "user_id" not in session:
         flash("Please log in first.")
         return redirect(url_for("login"))
-    return f"Welcome to your dashboard, {session['username']}!"
+    return render_template("dashboard.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -1,31 +1,20 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login - TaskQuest</title>
-</head>
-<body>
-    <h2>Login to TaskQuest</h2>
+{% extends "base.html" %}
 
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul>
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
+{% block title %}Login - TaskQuest{% endblock %}
 
-    <form method="POST">
-        <label>Username:</label><br>
-        <input type="text" name="username" required><br><br>
+{% block content %}
+    <div class="auth-box">
+        <!-- <div class="auth-brand">🏆 TaskQuest</div> -->
+        <h2>Welcome Back</h2>
+        <form method="POST">
+            <label>Username</label>
+            <input type="text" name="username" required>
 
-        <label>Password:</label><br>
-        <input type="password" name="password" required><br><br>
+            <label>Password</label>
+            <input type="password" name="password" required>
 
-        <button type="submit">Login</button>
-    </form>
-
-    <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign up here</a></p>
-</body>
-</html>
+            <button type="submit" class="btn">Login</button>
+        </form>
+        <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign up here</a></p>
+    </div>
+{% endblock %}

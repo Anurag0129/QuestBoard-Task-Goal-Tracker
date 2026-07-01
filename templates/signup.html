@@ -1,32 +1,23 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Sign Up - TaskQuest</title>
-</head>
-<body>
-    <h2>Create Your TaskQuest Account</h2>
+{% extends "base.html" %}
 
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul>
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
+{% block title %}Sign Up - TaskQuest{% endblock %}
 
-    <form method="POST">
-        <label>Username:</label><br>
-        <input type="text" name="username" required><br><br>
+{% block content %}
+    <div class="auth-box">
+        <!-- <div class="auth-brand">🏆 TaskQuest</div> -->
+        <h2>Create Your Account</h2>
+        <form method="POST">
+            <label>Username</label>
+            <input type="text" name="username" required>
 
-        <label>Email:</label><br>
-        <input type="email" name="email" required><br><br>
+            <label>Email</label>
+            <input type="email" name="email" required>
 
-        <label>Password:</label><br>
-        <input type="password" name="password" required><br><br>
+            <label>Password</label>
+            <input type="password" name="password" required>
 
-        <button type="submit">Sign Up</button>
-    </form>
-</body>
-</html> 
+            <button type="submit" class="btn">Sign Up</button>
+        </form>
+        <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+    </div>
+{% endblock %}
