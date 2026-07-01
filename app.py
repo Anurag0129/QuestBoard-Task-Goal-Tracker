@@ -165,6 +165,107 @@ def delete_task(task_id):
 
     return redirect(url_for("dashboard"))
 
+@app.route("/goals")
+def goals():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    # Fetch goals with task progress
+    cur.execute("""
+        SELECT g.goal_id, g.title, g.description, g.target_date, g.is_completed,
+               COUNT(t.task_id) AS total_tasks,
+               SUM(CASE WHEN t.is_completed THEN 1 ELSE 0 END) AS completed_tasks
+        FROM goals g
+        LEFT JOIN tasks t ON t.goal_id = g.goal_id
+        WHERE g.user_id = %s
+        GROUP BY g.goal_id
+        ORDER BY g.created_at DESC
+    """, (session["user_id"],))
+    goals = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    return render_template("goals.html", goals=goals)
+
+
+@app.route("/goals/add", methods=["POST"])
+def add_goal():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    title = request.form["title"]
+    description = request.form["description"] or None
+    target_date = request.form["target_date"] or None
+
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "INSERT INTO goals (user_id, title, description, target_date) VALUES (%s, %s, %s, %s)",
+            (session["user_id"], title, description, target_date)
+        )
+        conn.commit()
+        flash("Goal created!")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error: {e}")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("goals"))
+
+
+@app.route("/goals/complete/<int:goal_id>", methods=["POST"])
+def complete_goal(goal_id):
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "UPDATE goals SET is_completed = TRUE WHERE goal_id = %s AND user_id = %s",
+            (goal_id, session["user_id"])
+        )
+        conn.commit()
+        flash("Goal completed! 🏆")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error: {e}")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("goals"))
+
+
+@app.route("/goals/delete/<int:goal_id>", methods=["POST"])
+def delete_goal(goal_id):
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "DELETE FROM goals WHERE goal_id = %s AND user_id = %s",
+            (goal_id, session["user_id"])
+        )
+        conn.commit()
+        flash("Goal deleted.")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error: {e}")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("goals"))
+
 
 
 if __name__ == "__main__":

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Goals - TaskQuest{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+
+    <h2>Your Goals</h2>
+
+    <!-- Add Goal Form -->
+    <div class="card">
+        <h3>🎯 Create a New Goal</h3>
+        <form method="POST" action="{{ url_for('add_goal') }}" class="goal-form">
+            <input type="text" name="title" placeholder="What's your goal?" required>
+            <input type="text" name="description" placeholder="Description (optional)">
+            <input type="date" name="target_date">
+            <button type="submit" class="btn btn-small">Create Goal</button>
+        </form>
+    </div>
+
+    <!-- Goals List -->
+    <div class="card">
+        <h3>🏁 Your Goals</h3>
+
+        {% if goals %}
+            {% for goal in goals %}
+            <div class="goal-item {% if goal[4] %}goal-completed{% endif %}">
+                <div class="goal-header">
+                    <div class="goal-info">
+                        <span class="goal-title">{{ goal[1] }}</span>
+                        {% if goal[2] %}
+                            <span class="goal-desc">{{ goal[2] }}</span>
+                        {% endif %}
+                        {% if goal[3] %}
+                            <span class="task-due">📅 Target: {{ goal[3] }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="task-actions">
+                        {% if not goal[4] %}
+                            <form method="POST" action="{{ url_for('complete_goal', goal_id=goal[0]) }}">
+                                <button type="submit" class="btn-complete">✔ Complete</button>
+                            </form>
+                        {% else %}
+                            <span class="badge-done">🏆 Achieved!</span>
+                        {% endif %}
+                        <form method="POST" action="{{ url_for('delete_goal', goal_id=goal[0]) }}">
+                            <button type="submit" class="btn-delete">🗑 Delete</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="progress-section">
+                    {% set total = goal[5] %}
+                    {% set done = goal[6] if goal[6] else 0 %}
+                    {% set percent = ((done / total) * 100) | int if total > 0 else 0 %}
+                    <div class="progress-label">
+                        <span>Tasks: {{ done }}/{{ total }} completed</span>
+                        <span>{{ percent }}%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: {{ percent }}%"></div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="empty-msg">No goals yet. Create one above!</p>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

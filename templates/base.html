@@ -15,6 +15,7 @@
                 {% if session.get("user_id") %}
                     <span>Hello, {{ session["username"] }}!</span>
                     <a href="{{ url_for('dashboard') }}">Dashboard</a>
+                    <a href="{{ url_for('goals') }}">Goals</a>
                     <a href="{{ url_for('logout') }}">Logout</a>
                 {% else %}
                     <a href="{{ url_for('login') }}">Login</a>
