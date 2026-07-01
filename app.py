@@ -76,7 +76,96 @@ def dashboard():
     if "user_id" not in session:
         flash("Please log in first.")
         return redirect(url_for("login"))
-    return render_template("dashboard.html")
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT task_id, title, due_date, is_completed, created_at FROM tasks WHERE user_id = %s ORDER BY created_at DESC",
+        (session["user_id"],)
+    )
+    tasks = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    return render_template("dashboard.html", tasks=tasks)
+
+
+
+@app.route("/tasks/add", methods=["POST"])
+def add_task():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    title = request.form["title"]
+    due_date = request.form["due_date"] or None
+
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "INSERT INTO tasks (user_id, title, due_date) VALUES (%s, %s, %s)",
+            (session["user_id"], title, due_date)
+        )
+        conn.commit()
+        flash("Task added!")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error: {e}")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("dashboard"))
+
+
+@app.route("/tasks/complete/<int:task_id>", methods=["POST"])
+def complete_task(task_id):
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "UPDATE tasks SET is_completed = TRUE, completed_at = CURRENT_TIMESTAMP WHERE task_id = %s AND user_id = %s",
+            (task_id, session["user_id"])
+        )
+        conn.commit()
+        flash("Task completed! 🎉")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error: {e}")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("dashboard"))
+
+
+@app.route("/tasks/delete/<int:task_id>", methods=["POST"])
+def delete_task(task_id):
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "DELETE FROM tasks WHERE task_id = %s AND user_id = %s",
+            (task_id, session["user_id"])
+        )
+        conn.commit()
+        flash("Task deleted.")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error: {e}")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("dashboard"))
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)

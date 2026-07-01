@@ -3,8 +3,53 @@
 {% block title %}Dashboard - TaskQuest{% endblock %}
 
 {% block content %}
-    <div class="dashboard">
-        <h2>Your Dashboard</h2>
-        <p>Tasks and goals will appear here soon.</p>
+<div class="dashboard">
+
+    <h2>Your Dashboard</h2>
+
+    <!-- Add Task Form -->
+    <div class="card">
+        <h3>➕ Add a New Task</h3>
+        <form method="POST" action="{{ url_for('add_task') }}" class="task-form">
+            <input type="text" name="title" placeholder="What do you need to do?" required>
+            <input type="date" name="due_date">
+            <button type="submit" class="btn btn-small">Add Task</button>
+        </form>
     </div>
+
+    <!-- Task List -->
+    <div class="card">
+        <h3>📋 Your Tasks</h3>
+
+        {% if tasks %}
+            <ul class="task-list">
+            {% for task in tasks %}
+                <li class="task-item {% if task[3] %}completed{% endif %}">
+                    <div class="task-info">
+                        <span class="task-title">{{ task[1] }}</span>
+                        {% if task[2] %}
+                            <span class="task-due">📅 {{ task[2] }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="task-actions">
+                        {% if not task[3] %}
+                            <form method="POST" action="{{ url_for('complete_task', task_id=task[0]) }}">
+                                <button type="submit" class="btn-complete">✔ Done</button>
+                            </form>
+                        {% else %}
+                            <span class="badge-done">✅ Completed</span>
+                        {% endif %}
+                        <form method="POST" action="{{ url_for('delete_task', task_id=task[0]) }}">
+                            <button type="submit" class="btn-delete">🗑 Delete</button>
+                        </form>
+                    </div>
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p class="empty-msg">No tasks yet. Add one above to get started!</p>
+        {% endif %}
+    </div>
+
+</div>
 {% endblock %}
