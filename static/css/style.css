@@ -18,6 +18,8 @@ body {
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    flex-wrap: wrap;
+    position: relative;
 }
 
 .nav-brand {
@@ -25,6 +27,22 @@ body {
     font-size: 1.4rem;
     font-weight: bold;
     letter-spacing: 1px;
+}
+
+.nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.6rem;
+    cursor: pointer;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
 }
 
 .nav-links a {
@@ -65,7 +83,7 @@ body {
     margin-bottom: 8px;
 }
 
-/* Auth box (login/signup) */
+/* Auth box */
 .auth-box {
     background: white;
     padding: 40px;
@@ -113,6 +131,15 @@ body {
     text-decoration: none;
 }
 
+.auth-brand {
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #4a90d9;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+
 /* Button */
 .btn {
     width: 100%;
@@ -135,16 +162,6 @@ body {
     margin-bottom: 20px;
     color: #4a90d9;
 }
-
-.auth-brand {
-    text-align: center;
-    font-size: 1.6rem;
-    font-weight: bold;
-    color: #4a90d9;
-    margin-bottom: 8px;
-    letter-spacing: 1px;
-}
-
 
 /* Card */
 .card {
@@ -206,6 +223,8 @@ body {
     align-items: center;
     padding: 12px 0;
     border-bottom: 1px solid #f0f0f0;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
 .task-item:last-child {
@@ -221,6 +240,8 @@ body {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    flex: 1;
+    min-width: 150px;
 }
 
 .task-title {
@@ -237,6 +258,7 @@ body {
     display: flex;
     gap: 8px;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .btn-complete {
@@ -265,6 +287,31 @@ body {
 
 .btn-delete:hover {
     background-color: #c82333;
+}
+
+.btn-edit {
+    background-color: #f0a500;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    text-decoration: none;
+}
+
+.btn-edit:hover {
+    background-color: #d4910a;
+}
+
+.btn-cancel {
+    background-color: #888;
+    text-decoration: none;
+    text-align: center;
+}
+
+.btn-cancel:hover {
+    background-color: #666;
 }
 
 .badge-done {
@@ -325,12 +372,16 @@ body {
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
 .goal-info {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    flex: 1;
+    min-width: 150px;
 }
 
 .goal-title {
@@ -371,19 +422,49 @@ body {
     transition: width 0.4s ease;
 }
 
-/* Task goal select dropdown */
-.task-select {
-    padding: 10px 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 0.95rem;
-    background: white;
-    color: #333;
+/* Stats Cards */
+.stats-grid {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
 }
 
-.task-select:focus {
-    outline: none;
-    border-color: #4a90d9;
+.stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px 28px;
+    text-align: center;
+    flex: 1;
+    min-width: 130px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-top: 4px solid #4a90d9;
+}
+
+.stat-icon {
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #4a90d9;
+    margin-bottom: 4px;
+}
+
+.stat-label {
+    font-size: 0.82rem;
+    color: #888;
+    font-weight: 500;
+}
+
+.streak-card {
+    border-top: 4px solid #ff6b35;
+}
+
+.streak-card .stat-number {
+    color: #ff6b35;
 }
 
 /* Trophy grid */
@@ -444,75 +525,133 @@ body {
     font-size: 1rem;
 }
 
-/* Stats Cards */
-.stats-grid {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
-}
-
-.stat-card {
-    background: white;
-    border-radius: 12px;
-    padding: 20px 28px;
-    text-align: center;
-    flex: 1;
-    min-width: 140px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    border-top: 4px solid #4a90d9;
-}
-
-.stat-icon {
-    font-size: 1.8rem;
-    margin-bottom: 8px;
-}
-
-.stat-number {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #4a90d9;
-    margin-bottom: 4px;
-}
-
-.stat-label {
-    font-size: 0.82rem;
-    color: #888;
-    font-weight: 500;
-}
-
-/* Edit and Cancel buttons */
-.btn-edit {
-    background-color: #f0a500;
-    color: white;
-    border: none;
-    padding: 6px 12px;
+/* Task goal select dropdown */
+.task-select {
+    padding: 10px 12px;
+    border: 1px solid #ccc;
     border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    text-decoration: none;
+    font-size: 0.95rem;
+    background: white;
+    color: #333;
 }
 
-.btn-edit:hover {
-    background-color: #d4910a;
+.task-select:focus {
+    outline: none;
+    border-color: #4a90d9;
 }
 
-.btn-cancel {
-    background-color: #888;
-    text-decoration: none;
-    text-align: center;
-}
+/* ============================================
+   MOBILE RESPONSIVE — screens under 600px
+   ============================================ */
+@media (max-width: 600px) {
 
-.btn-cancel:hover {
-    background-color: #666;
-}
+    /* Navbar */
+    .navbar {
+        padding: 14px 20px;
+    }
 
-/* STYLE FOR STREAK CARD */
+    .nav-toggle {
+        display: block;
+    }
 
-.streak-card {
-    border-top: 4px solid #ff6b35;
-}
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        margin-top: 12px;
+        gap: 0;
+    }
 
-.streak-card .stat-number {
-    color: #ff6b35;
+    .nav-links.nav-open {
+        display: flex;
+    }
+
+    .nav-links a,
+    .nav-links span {
+        margin-left: 0;
+        padding: 10px 0;
+        border-top: 1px solid rgba(255,255,255,0.2);
+        width: 100%;
+        font-size: 1rem;
+    }
+
+    /* Container */
+    .container {
+        margin: 20px auto;
+        padding: 0 14px;
+    }
+
+    /* Stats grid — 2 columns on mobile */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .stat-card {
+        padding: 16px 12px;
+        min-width: unset;
+    }
+
+    .stat-number {
+        font-size: 1.6rem;
+    }
+
+    /* Task form — stack vertically */
+    .task-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .task-form input[type="text"],
+    .task-form input[type="date"],
+    .task-select {
+        width: 100%;
+    }
+
+    .btn-small {
+        width: 100%;
+    }
+
+    /* Task actions — wrap on small screens */
+    .task-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .task-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    /* Goal form — stack vertically */
+    .goal-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .goal-form input,
+    .goal-form select {
+        width: 100%;
+    }
+
+    .goal-header {
+        flex-direction: column;
+    }
+
+    /* Auth box */
+    .auth-box {
+        padding: 24px 18px;
+    }
+
+    /* Trophy grid — 2 columns */
+    .trophy-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .trophy-card {
+        width: 100%;
+    }
 }
